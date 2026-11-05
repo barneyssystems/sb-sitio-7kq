@@ -64,7 +64,7 @@
   // Featured photo cards: AI illustrations of these exact catalog products (FUENTES §6).
   var FEATURED = [
     ['empanadas', 'Empanadas grandes, de pollo o de carne', 'congeladas · $10', 'Empanadas colombianas doradas sobre un plato', 'Golden Colombian empanadas on a plate'],
-    ['tamal', 'Tamal colombiano', 'congelado · $15', 'Tamal envuelto en hoja de plátano y amarrado', 'A tamal wrapped and tied in a banana leaf'],,
+    ['tamal', 'Tamal colombiano', 'congelado · $15', 'Tamal envuelto en hoja de plátano y amarrado', 'A tamal wrapped and tied in a banana leaf'],
     ['pulpas', 'Pulpas de fruta', 'maracuyá, lulo, guanábana, guayaba o tomate de árbol · $10', 'Sugerencia: jugos de fruta preparados con pulpa', 'Serving suggestion: fruit juices made from pulp', 1],
     ['arepa-rellena-queso', 'Arepa rellena de queso', '$10', 'Arepas de maíz doradas en sartén de hierro, una abierta con queso derretido', 'Golden corn arepas in a cast-iron pan, one open with melted cheese'],
     ['palitos-queso', 'Palitos de queso prefritos', '$10', 'Palitos de queso dorados, uno abierto con queso', 'Golden cheese sticks, one open with cheese'],
@@ -108,7 +108,7 @@
   function renderSwipe() {
     $('#swipe').innerHTML = FEATURED.map(function (f) {
       var tag = f[2].replace('congeladas', L('congeladas', 'frozen')).replace('congelado', L('congelado', 'frozen')).replace(' o tomate', L(' o tomate', ' or tomate'));
-      return '<article class="card"><div class="ph"><img loading="lazy" decoding="async" width="800" height="600" src="img/' + f[0] + '-480.webp" srcset="img/' + f[0] + '-480.webp 480w, img/' + f[0] + '-800.webp 800w" sizes="(min-width:1000px) 31vw, (min-width:720px) 42vw, 78vw" alt="' + esc(L(f[3], f[4])) + '"><span class="ilu">' + (f[5] ? L('Ilustración con IA · sugerencia: jugo', 'AI illustration · serving suggestion: juice') : L('Ilustración con IA', 'AI illustration')) + '</span></div>' +
+      return '<article class="card"><div class="ph"><img loading="lazy" decoding="async" width="800" height="600" src="img/' + f[0] + '-480.webp" srcset="img/' + f[0] + '-480.webp 480w, img/' + f[0] + '-800.webp 800w" sizes="(min-width:1000px) 31vw, (min-width:720px) 42vw, 78vw" alt="' + esc(L(f[3], f[4])) + '"><span class="ilu">' + (f[5] ? L('Foto ilustrativa · IA · sugerencia: jugo', 'Illustrative photo · AI · suggestion: juice') : L('Foto ilustrativa · IA', 'Illustrative photo · AI')) + '</span></div>' +
         '<h3>' + esc(f[1]) + '</h3><p class="pr">' + esc(tag) + '</p></article>';
     }).join('');
   }
@@ -177,6 +177,8 @@
 
   // ---------- motion (transform/opacity only; html.mo is set in <head> only when reduced motion is off) ----------
   var de = document.documentElement, motion = de.classList.contains('mo'), progress = null;
+  // live state: html.mo is kept in sync with the OS preference by the inline <head> listener (SAB-WEB-R4/R5)
+  function motionNow() { return de.classList.contains('mo'); }
   var io = null;
   function reveal(els) {
     els.forEach(function (el) {
@@ -206,7 +208,7 @@
   // scroll progress → --p (0 when the element enters at the bottom, 1 when it leaves at the top); on-screen elements only
   var ps = $$('[data-p]');
   ps.forEach(function (el) { if (el.dataset.v) el.style.setProperty('--v', el.dataset.v); });
-  if (motion && ps.length && 'IntersectionObserver' in window) {
+  if (ps.length && 'IntersectionObserver' in window) {   // always observe; CSS applies the transforms only under html.mo
     var live = [], vh = window.innerHeight;
     var pio = new IntersectionObserver(function (es) {
       es.forEach(function (e) { var i = live.indexOf(e.target); if (e.isIntersecting && i < 0) live.push(e.target); if (!e.isIntersecting && i >= 0) live.splice(i, 1); });
@@ -222,10 +224,14 @@
 
   // swipe row: native scroller; JS only drives the desktop arrows and hides the cue after the first swipe
   var sw = $('#swipe'), wrap = $('.swipe-wrap');
-  function step(dir) { var c = sw.firstElementChild; var dx = c ? c.getBoundingClientRect().width + 14 : sw.clientWidth * 0.8; sw.scrollBy({ left: dir * dx, behavior: motion ? 'smooth' : 'auto' }); }
+  function step(dir) { var c = sw.firstElementChild; var dx = c ? c.getBoundingClientRect().width + 14 : sw.clientWidth * 0.8; sw.scrollBy({ left: dir * dx, behavior: motionNow() ? 'smooth' : 'auto' }); }
   $('.sw-prev').addEventListener('click', function () { step(-1); });
   $('.sw-next').addEventListener('click', function () { step(1); });
   sw.addEventListener('scroll', function () { if (sw.scrollLeft > 8) wrap.classList.add('used'); }, { passive: true });
+  // switching to reduced motion stops any programmatic smooth scroll already in flight
+  var rmq = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)');
+  if (rmq) { var stopSmooth = function () { if (rmq.matches) sw.scrollTo({ left: sw.scrollLeft, behavior: 'auto' }); };
+    if (rmq.addEventListener) rmq.addEventListener('change', stopSmooth); else if (rmq.addListener) rmq.addListener(stopSmooth); }
 
   var hdr = $('#hdr'), obar = $('#obar'), hero = $('.hero .cta'), ticking = false;
   // the sticky bar steps aside while an in-page catalog button (or the footer) is on screen, so two green buttons never stack

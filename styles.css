@@ -55,8 +55,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .btn-ghost:hover{background:var(--cacao);color:var(--crema)}
 .btn svg{width:22px;height:22px;flex:none}
 .micro{font-size:13px;color:var(--gris);margin-top:10px}
-.hero-photo{position:relative;border-radius:22px;overflow:hidden;background:var(--crema-2);aspect-ratio:4/5}
-.hero-photo img{width:100%;height:100%;object-fit:cover}
 .ilu{position:absolute;left:10px;bottom:10px;font-size:11px;letter-spacing:.02em;background:rgba(36,22,15,.78);color:#f6efe4;padding:4px 9px;border-radius:99px}
 
 /* ---------- three promises ---------- */
@@ -195,13 +193,6 @@ section{padding:72px 0 0}
 @keyframes rise{from{transform:translateY(105%)}to{transform:none}}
 .mo .hl{animation:up .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--hd,0s)}
 @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.hero-photo .hp-in{position:absolute;inset:-7% 0;will-change:transform}
-.hero-photo .hp-in img{width:100%;height:100%;object-fit:cover}
-.mo .hero-photo{animation:unveil 1.25s cubic-bezier(.65,0,.2,1) .15s both}
-.mo .hero-photo .hp-in img{animation:settle 1.8s cubic-bezier(.2,.8,.2,1) .15s both}
-@keyframes unveil{from{clip-path:inset(18% 8% 18% 8% round 40px);opacity:.001}to{clip-path:inset(0 0 0 0 round 22px);opacity:1}}
-@keyframes settle{from{transform:scale(1.14)}to{transform:none}}
-.mo .hero-photo[data-p] .hp-in{transform:translate3d(0,calc((var(--p,.5) - .5) * -9%),0)}
 /* stamp: slow turn, the "3+" stays upright because it's a separate text node outside the turning group */
 .stamp{position:absolute;right:12px;top:12px;width:96px;height:96px;filter:drop-shadow(0 8px 14px rgba(36,22,15,.35))}
 .stamp text:first-of-type{transform-box:view-box;transform-origin:60px 60px}
@@ -259,9 +250,96 @@ section{padding:72px 0 0}
   .pola.p3{top:268px}
 }
 @media (prefers-reduced-motion:reduce){
-  .hero-photo .hp-in{inset:0}
 }
 .pola .ilu{left:auto;right:14px;top:14px;bottom:auto}
 .pola.p1 .ilu{right:auto;left:14px}
 .pola{position:absolute}
 .pola.p2 .ilu{max-width:calc(100% - 28px);white-space:normal;text-align:right}
+
+/* =================== R2 (Flavio): Colombian identity + honest photos =================== */
+:root{--co-am:#f2c230;--co-az:#1f4aa8;--co-ro:#c8202f}
+/* preview note for Santi (delete the <p class="preview"> at launch) */
+.preview{background:var(--papel);color:var(--cacao-2);font-size:13px;line-height:1.45;text-align:center;padding:9px 16px;border-bottom:1px solid var(--linea)}
+.preview b{font-weight:600}
+/* flag colours as an accent only: one thin rule in the flag's proportions (yellow 2 : blue 1 : red 1) */
+.tri{height:4px;background:linear-gradient(90deg,var(--co-am) 0 50%,var(--co-az) 50% 75%,var(--co-ro) 75% 100%)}
+/* photo marks: light, not a legal disclaimer */
+.ilu{font-size:10.5px;letter-spacing:.03em;background:rgba(36,22,15,.55);padding:3px 8px}
+.brand{align-items:center}
+
+/* =================== R4 (Flavio, 11-04): a REAL jeep, La Boca level =================== */
+@font-face{font-family:"Big Shoulders Display";src:url(fonts/bigshoulders-800.woff2) format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{--amarillo:#f4c430;--azul:#1f3f99;--rojo:#c8202f;--wall:"Big Shoulders Display",Impact,"Arial Narrow",sans-serif}
+/* yellow hero (with the red jeep and the blue band below, the flag appears without a flag) */
+.hero{background:var(--amarillo);padding:18px 0 34px;overflow:hidden}
+.hero .eyebrow{color:var(--cacao)}
+.hero h1 i{color:var(--rojo)}
+.hero .lede{color:var(--cacao)}
+.hero .micro{color:#5a4320}
+.hero-txt{display:grid;grid-template-columns:minmax(0,1fr)}
+.hero .btn-ghost{border-color:var(--cacao);background:transparent}
+/* the stage: a wall of huge type, the real photo jeep in front of it */
+.stage{position:relative;margin:4px calc(var(--pad)*-1) 18px;height:clamp(250px,78vw,520px)}
+.muro{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:0;overflow:hidden;pointer-events:none}
+.muro .row{display:block;white-space:nowrap;font-family:var(--wall);font-weight:800;font-size:clamp(64px,22vw,190px);line-height:.86;letter-spacing:.005em;
+  color:#fbf3df;-webkit-text-stroke:2.5px var(--cacao);paint-order:stroke fill;text-shadow:5px 5px 0 var(--cacao)}
+.muro .row b{color:var(--rojo);-webkit-text-stroke:0;text-shadow:none;font-weight:800;padding:0 .1em}
+.muro .r2{color:var(--amarillo);transform:translateX(-18%)}
+.muro .r1,.muro .r3{transform:translateX(-6%)}
+.jeep{position:absolute;left:3%;right:3%;bottom:-2%;margin:0}
+.jeep-in{position:relative}
+.jeep img{display:block;width:100%;height:auto;filter:drop-shadow(0 22px 18px rgba(36,22,15,.38)) drop-shadow(0 3px 3px rgba(36,22,15,.35))}
+.stage .stamp{left:auto;right:calc(var(--pad) - 2px);top:-6px;width:84px;height:84px;z-index:3}
+.hero .cta{position:relative;z-index:4}
+/* motion (html.mo only): the jeep drives in once, then drifts with the scroll; the type rows slide against each other */
+.mo .jeep-in{animation:drive 1.7s cubic-bezier(.16,.84,.26,1) .25s both}
+@keyframes drive{0%{transform:translateX(105%)}70%{transform:translateX(-1.2%)}82%{transform:translate(0,-.6%)}90%{transform:translate(0,.2%)}100%{transform:none}}
+.mo .stage[data-p] .jeep{transform:translate3d(calc((var(--p,.4) - .4) * -46vw),0,0)}
+.mo .stage[data-p] .r1,.mo .stage[data-p] .r3{transform:translate3d(calc(-6% + (var(--p,.4) - .4) * 30vw),0,0)}
+.mo .stage[data-p] .r2{transform:translate3d(calc(-18% - (var(--p,.4) - .4) * 30vw),0,0)}
+.mo .muro .row{animation:slidein 1.2s cubic-bezier(.2,.8,.2,1) both}
+.mo .muro .r2{animation-delay:.08s}.mo .muro .r3{animation-delay:.16s}
+@keyframes slidein{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
+/* blue band for the three promises */
+.azul{background:var(--azul);color:#f3efe6;padding:6px 0 10px}
+.azul .promises{margin:0;border:0}
+.azul .promises li{border-bottom-color:rgba(255,255,255,.16)}
+.azul .promises .n{color:var(--amarillo)}
+.azul .promises p{color:#c9d2ec}
+/* the real Cocora photo band */
+.cocora{position:relative;background:var(--cacao);color:var(--crema);padding:0 0 46px}
+.coc-ph{margin:0;overflow:hidden;aspect-ratio:4/3;max-height:78vh}
+.coc-ph img{width:100%;height:112%;object-fit:cover;object-position:56% 60%}
+.mo .coc-ph[data-p] img{transform:translate3d(0,calc((var(--p,.5) - .5) * -9%),0) scale(1.02)}
+.coc-txt{padding-top:26px}
+.coc-txt .eyebrow{color:var(--amarillo)}
+.coc-txt .eyebrow::before{content:"";display:inline-block;width:28px;height:4px;margin-right:10px;vertical-align:middle;background:linear-gradient(90deg,var(--co-am) 0 50%,var(--co-az) 50% 75%,var(--co-ro) 75% 100%)}
+.coc-txt h2{font-family:var(--serif);font-weight:400;font-size:clamp(34px,8.6vw,60px);line-height:1.02;letter-spacing:-.015em;margin-top:10px;max-width:17ch}
+.coc-txt h2 i{color:var(--amarillo)}
+.credit{margin-top:14px;font-size:12px;color:#b7a48c;max-width:60ch}
+.credit a,.credits a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.foot .credits{margin-top:18px}
+@media (min-width:720px){.coc-ph{aspect-ratio:16/9}}
+@media (min-width:1000px){
+  .hero{padding:40px 0 56px}
+  .hero-txt{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);column-gap:48px;align-items:center}
+  .hero-txt>*{grid-column:1}
+  .hero-txt .stage{grid-column:2;grid-row:1 / span 6;margin:0;height:540px}
+  .muro .row{font-size:150px}
+  .coc-ph{aspect-ratio:21/9}
+  .coc-txt{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end}
+}
+/* R4 tune: letters readable above the car (La Boca's composition); jeep smaller, sits on the last row */
+.stage{height:clamp(330px,104vw,600px)}
+.muro{justify-content:flex-start;padding-top:2px}
+.jeep{left:7%;right:5%;bottom:0}
+.stage .stamp{top:auto;bottom:58%;right:calc(var(--pad) - 4px)}
+.credit a,.credits a{padding:12px 0;margin:-12px 0}
+@media (min-width:1000px){.hero-txt .stage{height:600px}.jeep{left:2%;right:0}}
+.post-hero .marq{margin-top:0}
+.credit a,.credits a{padding:14px 0;margin:-14px 0}
+@media (min-width:1000px){.hero-grid{grid-template-columns:1fr}.hero-txt .stage{grid-row:1 / span 7}.hero h1{font-size:clamp(64px,6.2vw,92px)}}
+.hero .btn{white-space:nowrap}
+.hero .cta{margin-bottom:18px}
+/* SAB-WEB-R4-P1-01 defence in depth: whatever classes are present, a reduced-motion preference stops every animation and transition */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
